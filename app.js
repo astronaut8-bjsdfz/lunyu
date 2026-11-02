@@ -93,6 +93,8 @@
 
   var CH = {};
   D.chs.forEach(function (c) { CH[c.id] = c; });
+  var BK = {};
+  D.books.forEach(function (b) { BK[b.id] = b; });
   var IT = {};
   D.items.forEach(function (i) { IT[i.id] = i; });
 
@@ -295,20 +297,29 @@
   function cardHTML(it) {
     var isCmp = it.t === 'compare';
     var ch = Array.isArray(it.c) ? CH[it.c[0]] : CH[it.c];
-    var loc = isCmp
-      ? it.c.map(function (id) { return CH[id].no; }).join(' · ')
-      : ch.no;
+
+    /* 跨篇对比时只写「4.11」看不出是哪一篇，得把篇名带上；
+       篇内的就不必，否则「八佾 3.1 · 八佾 3.19」啰嗦 */
+    var cIds = Array.isArray(it.c) ? it.c : [it.c];
+    var sameBook = cIds.every(function (id) { return CH[id] && CH[id].b === ch.b; });
+    function refOf(id) {
+      var c = CH[id];
+      if (!c) return id;
+      return (sameBook || !BK[c.b] ? '' : BK[c.b].name + ' ') + c.no;
+    }
+
+    var loc = isCmp ? cIds.map(refOf).join(' · ') : ch.no;
 
     var h = '<div class="card">';
     h += '<div class="meta"><span class="tag">' + TYPE_NAME[it.t] + '</span>';
-    h += '<span>' + (ch ? ch.b === 'xy' ? '学而 ' : '' : '') + loc + '</span>';
+    h += '<span>' + (sameBook && ch && BK[ch.b] ? BK[ch.b].name + ' ' : '') + loc + '</span>';
     h += '<span class="r">' + (sess.i + 1) + ' / ' + sess.q.length + '</span></div>';
 
     if (isCmp) {
       h += '<ul class="mats">';
       it.mats.forEach(function (m, k) {
         /* 编号用数字，不用 ①② —— 宋体里这个字形经常掉成方框 */
-        h += '<li><b>材料 ' + (k + 1) + ' · ' + it.c.map(function (id) { return CH[id].no; })[k] + '</b>' + esc(m) + '</li>';
+        h += '<li><b>材料 ' + (k + 1) + ' · ' + refOf(it.c[k]) + '</b>' + esc(m) + '</li>';
       });
       h += '</ul>';
       h += '<p class="ask">' + esc(it.q) + '</p>';
@@ -550,7 +561,15 @@
         h += '<button class="chip xs" data-pick-hot="none">清空</button>';
         h += '</div>';
         h += '<div class="sents">';
+        var lastB = null;
         list.forEach(function (c) {
+          /* 篇目多选时一口气列一百多句，按篇插一条小标题才找得到 */
+          if (c.b !== lastB) {
+            lastB = c.b;
+            var bk = BK[c.b];
+            h += '<div class="sent-bk">第 ' + (bk ? bk.no : '') + ' 篇 · ' +
+                 (bk ? bk.name : c.b) + '</div>';
+          }
           var on = PICK.chs.indexOf(c.id) >= 0;
           h += '<button class="sent' + (on ? ' on' : '') + '" data-pick-ch="' + c.id + '"' +
                ' aria-pressed="' + (on ? 'true' : 'false') + '">' +
@@ -757,7 +776,9 @@
     h += '<div class="card"><div class="acts">' +
          '<button class="btn ghost" data-act="theme">换个皮</button>' +
          '<button class="btn ghost" data-act="reset">清空这台机器的进度</button></div>' +
-         '<p class="lead" style="margin:12px 0 0">题库共 ' + total + ' 题，收了学而篇 16 章。为政、里仁在录。</p></div>';
+         '<p class="lead" style="margin:12px 0 0">题库共 ' + total + ' 题，收了' +
+         D.books.filter(function (b) { return b.on; }).map(function (b) { return b.name; }).join('、') +
+         '，共 ' + D.chs.length + ' 章。</p></div>';
 
     $('#view').innerHTML = h;
   }

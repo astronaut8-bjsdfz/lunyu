@@ -355,6 +355,15 @@ main{max-width:760px;margin:0 auto;min-height:50vh}
 /* 装不下时在列表外提示一句；不用底部渐隐，渐隐会把最后一行糊掉 */
 .sents-hint{display:none;margin:7px 0 0;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
 .sents-hint.on{display:block}
+/* 多篇并列时按篇分段，否则一百多句连成一片找不到北。
+   不用 sticky：滑动时会压住上一行，看着像标签串行 */
+.sent-bk{
+  padding:12px 2px 6px;background:var(--card);
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  color:var(--muted);
+  border-bottom:1px solid var(--line);
+}
+.sent-bk:first-child{padding-top:8px}
 .sent{
   display:flex;align-items:center;gap:9px;width:100%;
   background:transparent;border:0;border-bottom:1px solid var(--line);
