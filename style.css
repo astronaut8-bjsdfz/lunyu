@@ -310,6 +310,98 @@ main{max-width:760px;margin:0 auto;min-height:50vh}
   padding:12px 14px;text-align:center;user-select:all;
 }
 
+/* ---------------- 原文里的考点词 ---------------- */
+
+/* 解词题要「加点」。用 text-emphasis 画真正的着重号，
+   不改文字颜色——深色主题下把字染色反而更暗、更难读 */
+.src .hl{
+  font-style:normal;color:inherit;
+  -webkit-text-emphasis:filled circle var(--seal);
+  text-emphasis:filled circle var(--seal);
+  -webkit-text-emphasis-position:under;
+  text-emphasis-position:under;
+}
+:root[data-theme="dark"] .src .hl{
+  -webkit-text-emphasis-color:#ee9078;
+  text-emphasis-color:#ee9078;
+}
+
+/* ---------------- 自选练习 ---------------- */
+
+.pick-h{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.pk-t{font-size:16.5px;letter-spacing:.14em;color:var(--ink)}
+.pk-n{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.pk-lab{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  color:var(--muted);margin:16px 0 8px;
+}
+.pk-note{font-size:12.5px;line-height:1.85;color:var(--muted);margin:12px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font-family:var(--serif);font-size:13.5px;line-height:1;
+  padding:8px 14px;border-radius:2px;cursor:pointer;
+  background:transparent;border:1px solid var(--line);color:var(--ink2);
+  transition:border-color .15s,color .15s,background .15s;
+}
+.chip:hover{border-color:var(--ink2);color:var(--ink)}
+.chip.on{background:var(--sunk);border-color:var(--seal);color:var(--ink)}
+.chip:disabled{opacity:.38;cursor:default}
+.chip.verbtn.on{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.chip.xs{font-family:var(--mono);font-size:11.5px;padding:5px 10px;letter-spacing:.04em}
+.pk-sub{font-family:var(--mono);font-size:10px;letter-spacing:0;margin-left:8px;opacity:.8}
+
+/* 按句：一行一句，左边勾、中间前半句、右边重点标记 */
+.sents{border-top:1px solid var(--line);max-height:351px;overflow:auto}
+/* 装不下时在列表外提示一句；不用底部渐隐，渐隐会把最后一行糊掉 */
+.sents-hint{display:none;margin:7px 0 0;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.sents-hint.on{display:block}
+.sent{
+  display:flex;align-items:center;gap:9px;width:100%;
+  background:transparent;border:0;border-bottom:1px solid var(--line);
+  padding:9px 2px;cursor:pointer;text-align:left;
+  font-family:var(--serif);color:var(--ink2);
+  transition:color .15s,background .15s;
+}
+.sent:hover{background:var(--sunk);color:var(--ink)}
+.sent.on{color:var(--ink)}
+.s-bx{
+  flex:0 0 auto;width:13px;height:13px;position:relative;
+  border:1px solid var(--line);border-radius:2px;
+  transition:border-color .15s;
+}
+.sent.on .s-bx{border-color:var(--seal)}
+/* 宋体没有 ✓ 字形，勾用两条边画，别用字符 */
+.sent.on .s-bx::after{
+  content:'';position:absolute;left:3px;top:1px;
+  width:5px;height:8px;
+  border-right:1.5px solid var(--seal);border-bottom:1.5px solid var(--seal);
+  transform:rotate(40deg);
+}
+.s-no{flex:0 0 auto;min-width:26px;font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.s-tx{
+  flex:1 1 auto;font-size:13.5px;line-height:1.5;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.s-hot{
+  flex:0 0 auto;padding:1px 4px;border:1px solid var(--seal);border-radius:2px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--seal);opacity:.85;
+}
+
+/* ---------------- 译文校对 ---------------- */
+
+.revrow{display:flex;align-items:center;gap:10px;margin:18px 0 6px}
+.revrow .rev-h{margin:0}
+.revrow .btn{flex:0 0 auto}
+.btn.xs{padding:4px 11px;font-size:12px;line-height:1.5}
+.editbox{margin-top:12px}
+.editbox .ta{margin-bottom:10px}
+
+/* ---------------- 同步码输入 ---------------- */
+
+.row2{display:flex;gap:8px;margin:12px 0 0}
+.row2 .inp{flex:1 1 auto;font-family:var(--mono);letter-spacing:.1em}
+.row2 .btn{flex:0 0 auto;white-space:nowrap}
+
 /* toast */
 
 .toast{
@@ -353,5 +445,13 @@ main{max-width:760px;margin:0 auto;min-height:50vh}
   .acts .r{margin-left:0;width:100%}
   .wline{flex-wrap:nowrap;gap:8px}
   .wline .w{min-width:52px;font-size:16px}
+  .chip{padding:9px 13px;font-size:14px}
+  .row2{flex-wrap:wrap}
+  .row2 .inp{flex:1 1 100%}
+  .row2 .btn{flex:1 1 auto}
+  .pick-h .pk-t{font-size:15.5px}
+  .sents{max-height:264px}
+  .sent{padding:11px 2px}
+  .s-tx{font-size:14px}
   .foot{margin-top:26px;font-size:10.5px}
 }
